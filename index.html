@@ -1520,7 +1520,36 @@ function openLive(id) {
   navigateTo('screen-live');
 }
 
+function calculateProjectSpent(p) {
+  if (!p) return 0;
+  let totalPurchased = 0;
+  if (p.weeks) {
+    p.weeks.forEach(w => {
+      if (w.purchaseChecked) {
+        Object.keys(w.purchaseChecked).forEach(sid => {
+          if (w.purchaseChecked[sid]) {
+            const s = p.supplies ? p.supplies.find(x => x.id === sid) : null;
+            if (s && s.total) {
+              totalPurchased += s.total;
+            }
+          }
+        });
+      }
+    });
+  }
+  let totalExpenses = 0;
+  if (p.expenses) {
+    p.expenses.forEach(e => {
+      totalExpenses += (e.amt || 0);
+    });
+  }
+  return totalPurchased + totalExpenses;
+}
+
 function renderLive(p, isArchived = false) {
+  // Always keep calculated spent in sync with checked items & expenses
+  p.spent = calculateProjectSpent(p);
+
   // Archived badge
   document.getElementById('archived-notice').style.display = isArchived ? 'inline-block' : 'none';
 
@@ -1697,13 +1726,25 @@ function checkTask(wIdx, tIdx, val) {
 function checkPurchase(wIdx, sid, val) {
   const p = projects.find(x => x.id === currentId);
   if (!p) return;
+
+  const previousSpent = calculateProjectSpent(p);
   p.weeks[wIdx].purchaseChecked[sid] = val;
-  document.querySelectorAll('#live-supplies .check-item').forEach(label => {
-    const cb = label.querySelector('input[type=checkbox]');
-    if (cb && cb.getAttribute('onchange') && cb.getAttribute('onchange').includes("'" + sid + "'")) {
-      label.classList.toggle('done', val);
-    }
-  });
+  p.spent = calculateProjectSpent(p);
+
+  renderLive(p);
+  renderHome();
+
+  if (val && p.spent > p.estTotal && previousSpent <= p.estTotal) {
+    const excess = p.spent - p.estTotal;
+    document.getElementById('modal-budget-msg').innerHTML =
+      `Purchasing this item brings total spent to <strong>${fmtEGP(p.spent)}</strong>, exceeding the estimated budget (<strong>${fmtEGP(p.estTotal)}</strong>) by <strong style="color:var(--danger);">${fmtEGP(excess)}</strong>!`;
+    openModal('modal-budget-exceeded');
+  } else if (val && p.spent > p.estTotal) {
+    const excess = p.spent - p.estTotal;
+    document.getElementById('modal-budget-msg').innerHTML =
+      `Item checked. Total spent is now <strong>${fmtEGP(p.spent)}</strong>, exceeding the estimated budget (<strong>${fmtEGP(p.estTotal)}</strong>) by <strong style="color:var(--danger);">${fmtEGP(excess)}</strong>!`;
+    openModal('modal-budget-exceeded');
+  }
 }
 
 function completeWeek() {
@@ -1781,9 +1822,9 @@ function addExpense() {
   if (!desc) { alert('Please enter an expense description.'); return; }
   if (isNaN(amt) || amt < 0) { alert('Please enter a valid amount (0 or more).'); return; }
 
-  const previousSpent = p.spent;
+  const previousSpent = calculateProjectSpent(p);
   p.expenses.push({ desc, amt });
-  p.spent += amt;
+  p.spent = calculateProjectSpent(p);
 
   document.getElementById('exp-desc').value = '';
   document.getElementById('exp-amt').value  = '';
