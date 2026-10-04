@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiteFlo – Home Finishing Project Manager</title>
+  <meta name="description" content="SiteFlo helps design and finishing engineers in Egypt cost, price, schedule, and track home-finishing projects in one simple place." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Niche Color Palette: Architectural Blueprint & Brass Gold ── */
+    :root {
+      --brand:       #0f3443;
+      --brand-light: #1e5669;
+      --brand-dark:  #0a222c;
+      --accent:      #f59e0b;
+      --accent-light:#fbbf24;
+      --accent-soft: #fef3c7;
+      --bg:          #f8fafc;
+      --card:        #ffffff;
+      --text:        #0f172a;
+      --muted:       #64748b;
+      --border:      #e2e8f0;
+      --border-hover:#cbd5e1;
+      --danger:      #dc2626;
+      --danger-soft: #fef2f2;
+      --success:     #16a34a;
+      --success-soft:#f0fdf4;
+      --warn:        #d97706;
+      --warn-soft:   #fffbeb;
+      --radius:      16px;
+      --radius-sm:   10px;
+      --shadow-sm:   0 2px 6px rgba(15,23,42,.04);
+      --shadow:      0 10px 25px -5px rgba(15,52,67,.08), 0 4px 10px rgba(0,0,0,.03);
+      --shadow-lg:   0 20px 35px -10px rgba(15,52,67,.2), 0 8px 16px rgba(0,0,0,.06);
+      --nav-h:       68px;
+    }
+
+    /* ─── Reset & Base ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      background-image: radial-gradient(#e2e8f0 0.8px, transparent 0.8px);
+      background-size: 20px 20px;
+      color: var(--text);
+      min-height: 100dvh;
+      padding-bottom: 40px;
+      -webkit-font-smoothing: antialiased;
+    }
+    input, select, textarea, button { font-family: inherit; }
+
+    /* ─── Nav ────────────────────────────────────────────────────── */
+    #nav {
+      position: sticky; top: 0; z-index: 100;
+      height: var(--nav-h);
+      background: linear-gradient(135deg, #0a222c 0%, #0f3443 100%);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      box-shadow: 0 4px 20px rgba(10,34,44,.3);
+      border-bottom: 1px solid rgba(245,158,11,.35);
+    }
+    #nav-title {
+      font-size: 1.45rem; font-weight: 900; color: #fff;
+      letter-spacing: -0.5px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+    }
+    #nav-title span { color: var(--accent); }
+    .nav-logo-img {
+      width: 42px; height: 42px; border-radius: 10px;
+      border: 1.5px solid var(--accent); object-fit: cover;
+      box-shadow: 0 3px 10px rgba(245,158,11,.35);
+    }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    #nav-user-badge {
+      font-size: .8rem; color: #fff; font-weight: 600;
+      background: rgba(255,255,255,.12); backdrop-filter: blur(8px);
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,.2);
+      display: none;
+    }
+    #btn-about {
+      background: rgba(245,158,11,.15);
+      border: 1.5px solid var(--accent);
+      color: var(--accent-light); font-size: .85rem; font-weight: 700;
+      padding: 7px 18px; border-radius: 20px; cursor: pointer;
+      transition: all .2s ease;
+    }
+    #btn-about:hover { background: var(--accent); color: #0a222c; transform: translateY(-1px); }
+    #btn-signout {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.25);
+      color: rgba(255,255,255,.9); font-size: .78rem; font-weight: 600; padding: 6px 12px;
+      border-radius: 16px; cursor: pointer; display: none; transition: all .2s;
+    }
+    #btn-signout:hover { background: rgba(239,68,68,.2); border-color: var(--danger); color: #fff; }
+
+    /* ─── Screen System ──────────────────────────────────────────── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ─── Page Wrapper ───────────────────────────────────────────── */
+    .page-wrap {
+      max-width: 660px; margin: 0 auto;
+      padding: 28px 18px 48px;
+    }
+
+    /* ─── Sign In Screen Special Background ──────────────────────── */
+    #screen-signin {
+      min-height: calc(100vh - var(--nav-h));
+      background: linear-gradient(rgba(10,34,44,0.72), rgba(10,34,44,0.88)), url('finishing_hero_bg.jpg') center/cover no-repeat fixed;
+      display: none;
+    }
+    #screen-signin.active {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .signin-card {
+      background: rgba(10, 34, 44, 0.85) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(245, 158, 11, 0.35) !important;
+      color: #ffffff !important;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5) !important;
+    }
+    .signin-card label { color: rgba(255,255,255,.95) !important; }
+    .signin-card .input {
+      background: rgba(255,255,255,0.08) !important;
+      border-color: rgba(255,255,255,0.25) !important;
+      color: #ffffff !important;
+    }
+    .signin-card .input::placeholder { color: rgba(255,255,255,0.5) !important; }
+    .signin-card .input:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.25) !important;
+      background: rgba(255,255,255,0.12) !important;
+    }
+
+    /* ─── Typography ─────────────────────────────────────────────── */
+    .page-title {
+      font-size: 1.6rem; font-weight: 900; color: var(--text);
+      letter-spacing: -0.5px; margin-bottom: 4px;
+    }
+    .page-subtitle { font-size: .92rem; color: var(--muted); margin-bottom: 24px; font-weight: 400; }
+    h3 { font-size: 1.05rem; font-weight: 800; color: var(--brand-dark); margin-bottom: 14px; letter-spacing: -0.3px; }
+    label { display: block; font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+
+    /* ─── Card ───────────────────────────────────────────────────── */
+    .card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 22px 20px;
+      margin-bottom: 18px; border: 1px solid var(--border);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    /* ─── Form Elements ──────────────────────────────────────────── */
+    .input {
+      width: 100%; border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm); padding: 11px 14px;
+      font-size: .92rem; color: var(--text);
+      background: #ffffff; transition: all .2s ease;
+      outline: none; box-shadow: inset 0 1px 2px rgba(0,0,0,.02);
+    }
+    .input:focus { border-color: var(--brand); box-shadow: 0 0 0 3px rgba(15,52,67,.12); }
+    .input[readonly] { background: #f1f5f9; color: var(--muted); cursor: not-allowed; border-color: #cbd5e1; }
+    .input-group { margin-bottom: 16px; }
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    /* ─── Buttons ────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: none; border-radius: var(--radius-sm);
+      font-size: .92rem; font-weight: 700; cursor: pointer;
+      padding: 12px 22px; transition: all .2s ease;
+      text-decoration: none; letter-spacing: -0.2px;
+    }
+    .btn:active { transform: scale(.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--brand-dark) 0%, var(--brand) 100%);
+      color: #fff; box-shadow: 0 4px 14px rgba(15,52,67,.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+      box-shadow: 0 6px 18px rgba(15,52,67,.4); transform: translateY(-1px);
+    }
+    .btn-danger { background: linear-gradient(135deg, #b91c1c 0%, #dc2626 100%); color: #fff; box-shadow: 0 4px 12px rgba(220,38,38,.25); }
+    .btn-danger:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-ghost {
+      background: #ffffff; color: var(--brand);
+      border: 1.5px solid var(--brand);
+    }
+    .btn-ghost:hover { background: var(--brand); color: #fff; transform: translateY(-1px); }
+    .btn-accent {
+      background: linear-gradient(135deg, #d97706 0%, var(--accent) 100%);
+      color: #fff; box-shadow: 0 4px 14px rgba(245,158,11,.3);
+    }
+    .btn-accent:hover { opacity: .92; transform: translateY(-1px); }
+    .btn-sm { padding: 8px 14px; font-size: .82rem; border-radius: 8px; }
+    .btn-block { width: 100%; }
+    .btn-icon {
+      width: 38px; height: 38px; padding: 0;
+      border-radius: 50%; font-size: 1.1rem;
+    }
+    .btn-fab {
+      width: 60px; height: 60px; border-radius: 50%;
+      font-size: 1.8rem; padding: 0;
+      box-shadow: 0 10px 25px rgba(15,52,67,.4);
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
+      border: 2px solid rgba(245,158,11,.4);
+    }
+    .btn-fab:hover { transform: scale(1.06); }
+    .btn-back {
+      background: #ffffff; color: var(--muted);
+      border: 1.5px solid var(--border); padding: 8px 18px;
+      border-radius: 20px; font-size: .85rem; font-weight: 700; cursor: pointer;
+      margin-bottom: 22px; transition: all .2s; box-shadow: var(--shadow-sm);
+    }
+    .btn-back:hover { border-color: var(--brand); color: var(--brand); transform: translateX(-2px); }
+
+    .btn-row {
+      display: flex; gap: 14px; margin-top: 22px; flex-wrap: wrap;
+    }
+    .btn-row .btn { flex: 1; min-width: 130px; }
+
+    /* ─── FAB ────────────────────────────────────────────────────── */
+    #fab-new {
+      position: fixed; bottom: 32px; right: 24px;
+      z-index: 90;
+    }
+
+    /* ─── Project Cards (Home) ───────────────────────────────────── */
+    .proj-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 18px 20px;
+      margin-bottom: 14px; cursor: pointer;
+      border-left: 5px solid var(--brand);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: all .2s ease;
+    }
+    .proj-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-left-color: var(--accent); }
+    .proj-card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .proj-card-name { font-size: 1.05rem; font-weight: 800; color: var(--text); }
+    .proj-card-type { font-size: .82rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
+    .proj-card-progress { text-align: right; }
+    .progress-pct { font-size: 1.25rem; font-weight: 900; color: var(--brand); }
+    .mini-bar {
+      width: 86px; height: 9px; background: var(--border);
+      border-radius: 99px; margin-top: 6px; overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%; background: linear-gradient(90deg, var(--brand), var(--brand-light));
+      border-radius: 99px; transition: width .4s;
+    }
+
+    /* ─── Archive Cards ──────────────────────────────────────────── */
+    .archive-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 16px 20px;
+      margin-bottom: 12px; cursor: pointer;
+      border-left: 5px solid var(--accent);
+      border-top: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      transition: all .2s ease;
+    }
+    .archive-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+    .archive-name { font-weight: 800; font-size: 1rem; color: var(--text); }
+    .archive-rating { color: var(--accent); font-size: .92rem; margin-top: 4px; font-weight: 700; }
+    .archive-review { font-size: .85rem; color: var(--muted); margin-top: 4px; font-style: italic; }
+
+    /* ─── Empty State ────────────────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: 56px 24px;
+      color: var(--muted); background: var(--card);
+      border-radius: var(--radius); border: 2px dashed var(--border);
+    }
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 14px; }
+    .empty-state p { font-size: .98rem; line-height: 1.6; }
+
+    /* ─── Section Divider ────────────────────────────────────────── */
+    .section-sep {
+      display: flex; align-items: center; gap: 12px;
+      margin: 28px 0 18px; color: var(--muted); font-size: .82rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    .section-sep::before, .section-sep::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ─── Supply Rows ────────────────────────────────────────────── */
+    .supply-row {
+      display: grid; grid-template-columns: 1fr .7fr .7fr auto auto;
+      gap: 10px; align-items: center; margin-bottom: 10px;
+    }
+    .supply-row-total {
+      font-size: .85rem; font-weight: 800; color: var(--brand);
+      text-align: right; white-space: nowrap;
+    }
+    @media (max-width: 480px) {
+      .supply-row { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .supply-row-total { grid-column: 1 / -1; text-align: left; }
+    }
+
+    /* ─── Cost Summary Box ───────────────────────────────────────── */
+    .cost-box {
+      background: linear-gradient(135deg, #0a222c 0%, #0f3443 100%);
+      border-radius: var(--radius); padding: 22px 20px; color: #fff;
+      margin-top: 18px; box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(245,158,11,.35);
+    }
+    .cost-box-row {
+      display: flex; justify-content: space-between;
+      font-size: .92rem; margin-bottom: 10px; font-weight: 500;
+    }
+    .cost-box-row.total {
+      font-size: 1.08rem; font-weight: 800;
+      border-top: 1px solid rgba(255,255,255,.2); padding-top: 12px; margin-top: 8px;
+    }
+    .cost-box-row.price {
+      font-size: 1.25rem; font-weight: 900; color: var(--accent-light);
+      text-shadow: 0 2px 4px rgba(0,0,0,.3);
+    }
+
+    /* ─── Progress Tube (Page 4) ─────────────────────────────────── */
+    .tube-wrap {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 24px 20px; margin-bottom: 18px;
+      border: 1px solid var(--border);
+    }
+    .tube-pct-label {
+      text-align: center; font-size: 3.2rem; font-weight: 900;
+      color: var(--brand); line-height: 1; letter-spacing: -1px;
+    }
+    .tube-pct-label span { font-size: 1.3rem; font-weight: 700; color: var(--muted); }
+    .tube-track {
+      height: 28px; background: #e2e8f0;
+      border-radius: 99px; overflow: hidden; margin-top: 16px;
+      padding: 3px; box-shadow: inset 0 2px 4px rgba(0,0,0,.08);
+    }
+    .tube-fill {
+      height: 100%; border-radius: 99px;
+      background: linear-gradient(90deg, #10b981 0%, var(--accent) 100%);
+      transition: width .6s cubic-bezier(.4,0,.2,1);
+      box-shadow: 0 2px 8px rgba(16,185,129,.4);
+    }
+
+    /* ─── Budget Panel ───────────────────────────────────────────── */
+    .budget-row {
+      display: flex; justify-content: space-between;
+      font-size: .9rem; padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .budget-row:last-child { border: none; }
+    .budget-row .label { color: var(--muted); font-weight: 500; }
+    .budget-row .value { font-weight: 800; }
+    .budget-row .danger { color: var(--danger); }
+    .budget-row .success { color: var(--success); }
+
+    /* ─── Checklist & Task Typography ───────────────────────────── */
+    .check-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+      font-size: .9rem; font-weight: 400; color: var(--text); cursor: pointer;
+    }
+    .check-item:last-child { border: none; }
+    .check-item input[type=checkbox] {
+      width: 20px; height: 20px; accent-color: var(--brand); cursor: pointer; flex-shrink: 0; margin-top: 2px;
+    }
+    .check-item.done span { text-decoration: line-through; color: var(--muted); }
+
+    .task-desc-text {
+      font-size: .9rem; font-weight: 400; color: var(--text); line-height: 1.5;
+    }
+
+    /* ─── Week Card (Page 3) ─────────────────────────────────────── */
+    .week-card {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 18px 20px; margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .week-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 14px;
+    }
+    .week-title { font-weight: 800; font-size: 1rem; color: var(--brand-dark); }
+
+    /* ─── Notification Banner ────────────────────────────────────── */
+    .banner {
+      background: var(--accent-soft); border: 1.5px solid var(--accent);
+      border-radius: var(--radius-sm); padding: 14px 16px;
+      margin-bottom: 18px; font-size: .88rem; color: var(--text);
+      box-shadow: var(--shadow-sm);
+    }
+    .banner strong { display: block; margin-bottom: 6px; color: var(--warn); font-size: .92rem; }
+
+    /* ─── Alert Banner ───────────────────────────────────────────── */
+    .alert-danger {
+      background: var(--danger-soft); border: 1.5px solid var(--danger);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      font-size: .88rem; color: var(--danger); margin-bottom: 14px; font-weight: 600;
+    }
+
+    /* ─── Modal Overlay ──────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(10,34,44,.65); backdrop-filter: blur(5px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow-lg); padding: 30px 26px;
+      max-width: 400px; width: 100%;
+      animation: modal-in .25s ease;
+      border: 1px solid var(--border);
+    }
+    @keyframes modal-in {
+      from { transform: scale(.92); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .modal h3 { font-size: 1.15rem; margin-bottom: 12px; }
+    .modal p  { font-size: .92rem; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+    .modal-actions { display: flex; gap: 12px; }
+    .modal-actions .btn { flex: 1; }
+
+    /* ─── Stars ──────────────────────────────────────────────────── */
+    .star-row { display: flex; gap: 10px; margin-bottom: 16px; }
+    .star {
+      font-size: 2.2rem; cursor: pointer; color: var(--border);
+      transition: color .15s, transform .15s; user-select: none;
+    }
+    .star:hover { transform: scale(1.15); }
+    .star.active { color: var(--accent); }
+
+    /* ─── About Us ───────────────────────────────────────────────── */
+    .about-section {
+      background: var(--card); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 22px 20px; margin-bottom: 18px;
+      border: 1px solid var(--border);
+    }
+    .about-section h3 {
+      color: var(--brand); font-size: 1.05rem; margin-bottom: 12px;
+      border-bottom: 2px solid var(--accent-soft); padding-bottom: 6px;
+    }
+    .about-section p { font-size: .92rem; color: var(--text); line-height: 1.8; }
+
+    /* ─── Misc ───────────────────────────────────────────────────── */
+    .text-muted { color: var(--muted); font-size: .84rem; }
+    .text-danger { color: var(--danger); font-size: .84rem; font-weight: 600; }
+    .divider { height: 1px; background: var(--border); margin: 18px 0; }
+    .archived-badge {
+      display: inline-block; background: var(--accent-soft); border: 1.5px solid var(--accent);
+      color: var(--warn); font-size: .8rem; font-weight: 800; padding: 5px 12px;
+      border-radius: 99px; margin-bottom: 14px;
+    }
+
+    .badge-ontime {
+      display: inline-block; background: var(--success-soft); border: 1px solid var(--success);
+      color: var(--success); font-size: .78rem; font-weight: 800; padding: 3px 10px; border-radius: 12px;
+    }
+    .badge-delayed {
+      display: inline-block; background: var(--danger-soft); border: 1px solid var(--danger);
+      color: var(--danger); font-size: .78rem; font-weight: 800; padding: 3px 10px; border-radius: 12px;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .page-title { font-size: 1.35rem; }
+      .cost-box-row.price { font-size: 1.05rem; }
+      .row-3 { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════
+     NAV
+═════════════════════════════════════════════════════════════════ -->
+<nav id="nav">
+  <div id="nav-title" onclick="goHome()">
+    <img src="siteflo_icon_only.jpg" alt="SiteFlo Logo" class="nav-logo-img" />
+    Site<span>Flo</span>
+  </div>
+  <div class="nav-right">
+    <span id="nav-user-badge"></span>
+    <button id="btn-signout" onclick="signOut()">Sign Out</button>
+    <button id="btn-about" onclick="showAbout()">About Us</button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: SIGN IN (with interior finishing image background)
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-signin" class="screen active">
+  <div class="page-wrap" style="max-width:440px;width:100%;padding:40px 16px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <!-- Zoomed-in Icon-Only Emblem Mark (No Text) -->
+      <img src="siteflo_icon_only.jpg" alt="SiteFlo Icon Emblem"
+        style="width:108px;height:108px;border-radius:26px;border:2.5px solid var(--accent);box-shadow:0 12px 30px rgba(245,158,11,0.35);margin-bottom:16px;object-fit:cover;" />
+      <h1 style="font-size:2.1rem;font-weight:900;color:#ffffff;margin-bottom:6px;letter-spacing:-0.5px;text-shadow:0 2px 10px rgba(0,0,0,0.5);">Welcome to SiteFlo</h1>
+      <p style="font-size:.95rem;color:rgba(255,255,255,0.85);text-shadow:0 1px 4px rgba(0,0,0,0.6);">Architectural Project Costing, Scheduling & Live Tracking</p>
+    </div>
+
+    <!-- Legible Frosted Glass Card over Interior Finishing Background -->
+    <div class="card signin-card">
+      <div class="input-group">
+        <label for="signin-name">Engineer / Manager Name *</label>
+        <input class="input" id="signin-name" type="text" placeholder="e.g. Eng. Karim Mansour"
+          onkeydown="if(event.key==='Enter')submitSignIn()" />
+      </div>
+      <div class="input-group">
+        <label for="signin-firm">Firm / Account Name (optional)</label>
+        <input class="input" id="signin-firm" type="text" placeholder="e.g. Modern Finishing Studio"
+          onkeydown="if(event.key==='Enter')submitSignIn()" />
+      </div>
+      <p id="signin-error" class="text-danger" style="margin-bottom:14px;color:#fca5a5 !important;"></p>
+      <button class="btn btn-accent btn-block" style="padding:14px;font-size:1.02rem;font-weight:800;letter-spacing:0;" onclick="submitSignIn()">
+        Sign In & Open Tool
+      </button>
+    </div>
+
+    <p style="text-align:center;font-size:.84rem;color:rgba(255,255,255,0.8);margin-top:20px;font-weight:500;text-shadow:0 1px 4px rgba(0,0,0,0.7);">
+      Designed specifically for independent finishing engineers in Egypt.
+    </p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: HOME (Page 1)
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-home" class="screen">
+  <div class="page-wrap">
+    <p class="page-title">My Projects</p>
+    <p class="page-subtitle" id="home-user-sub">Manage your active home-finishing projects.</p>
+
+    <div id="home-active-list"></div>
+
+    <div class="section-sep">Archive</div>
+    <div id="home-archive-list"></div>
+  </div>
+
+  <!-- FAB -->
+  <button id="fab-new" class="btn btn-primary btn-fab" onclick="startNewProject()" title="New project">+</button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: NEW PROJECT & COSTING (Page 2)
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-costing" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" onclick="goBack()">← Back</button>
+    <p class="page-title">New Project</p>
+    <p class="page-subtitle">Fill in the project details, supplies, and labour.</p>
+
+    <!-- Client Info -->
+    <div class="card">
+      <h3>Client Information</h3>
+      <div class="row-2">
+        <div class="input-group">
+          <label for="c-name">Customer Name *</label>
+          <input class="input" id="c-name" type="text" placeholder="e.g. Ahmed Hassan" />
+        </div>
+        <div class="input-group">
+          <label for="c-id">Customer ID (Auto-generated)</label>
+          <input class="input" id="c-id" type="text" readonly style="font-weight:800;color:var(--brand);" />
+        </div>
+      </div>
+      <div class="row-3">
+        <div class="input-group">
+          <label for="c-type">Home Type *</label>
+          <select class="input" id="c-type">
+            <option value="">Select…</option>
+            <option>Apartment</option>
+            <option>Villa</option>
+            <option>Duplex</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="c-rooms">Rooms *</label>
+          <input class="input" id="c-rooms" type="number" min="1" placeholder="4" />
+        </div>
+        <div class="input-group">
+          <label for="c-size">Size (m²) *</label>
+          <input class="input" id="c-size" type="number" min="1" placeholder="120" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Supplies -->
+    <div class="card">
+      <h3>Supplies</h3>
+      <div id="supply-rows"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addSupplyRow()">+ Add Supply</button>
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;font-size:.92rem;">
+        <span class="text-muted" style="font-weight:600">Supplies Total</span>
+        <strong id="supplies-total" style="color:var(--brand-dark);font-size:1rem">0 EGP</strong>
+      </div>
+    </div>
+
+    <!-- Labour -->
+    <div class="card">
+      <h3>Labour</h3>
+      <div class="row-3">
+        <div class="input-group">
+          <label for="l-workers">Workers *</label>
+          <input class="input" id="l-workers" type="number" min="0" placeholder="5" oninput="updateCalc()" />
+        </div>
+        <div class="input-group">
+          <label for="l-salary">Salary/Worker (EGP) *</label>
+          <input class="input" id="l-salary" type="number" min="0" placeholder="6000" oninput="updateCalc()" />
+        </div>
+        <div class="input-group">
+          <label for="l-months">Months *</label>
+          <input class="input" id="l-months" type="number" min="0" placeholder="3" oninput="updateCalc()" />
+        </div>
+      </div>
+      <div class="divider"></div>
+      <div style="display:flex;justify-content:space-between;font-size:.92rem;">
+        <span class="text-muted" style="font-weight:600">Labour Total</span>
+        <strong id="labour-total" style="color:var(--brand-dark);font-size:1rem">0 EGP</strong>
+      </div>
+    </div>
+
+    <!-- Cost Summary -->
+    <div class="cost-box">
+      <div class="cost-box-row">
+        <span>Estimated Total Cost</span>
+        <span id="est-total">0 EGP</span>
+      </div>
+      <div class="input-group" style="margin-top:12px;margin-bottom:8px;">
+        <label style="color:rgba(255,255,255,.85);font-size:.85rem;font-weight:600">Profit Margin %</label>
+        <input class="input" id="margin" type="number" min="0" max="100" placeholder="20"
+          style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff;font-weight:700"
+          oninput="updateCalc()" />
+      </div>
+      <div class="cost-box-row total">
+        <span>Supplies Total</span>
+        <span id="cost-supplies">0 EGP</span>
+      </div>
+      <div class="cost-box-row total">
+        <span>Labour Total</span>
+        <span id="cost-labour">0 EGP</span>
+      </div>
+      <div class="cost-box-row price">
+        <span>Service Price to Client</span>
+        <span id="service-price">0 EGP</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <p class="text-muted" style="margin-top:20px;margin-bottom:10px;font-weight:600;">Share with client for confirmation:</p>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="confirmProject()">Confirm</button>
+      <button class="btn btn-danger" onclick="denyProject()">Deny</button>
+    </div>
+    <p id="costing-error" class="text-danger" style="margin-top:12px;"></p>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: TIME SCHEDULE (Page 3)
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-schedule" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" onclick="goBack()">← Back</button>
+    <p class="page-title">Time Schedule</p>
+    <p class="page-subtitle" id="sched-subtitle">Plan the project week by week.</p>
+
+    <div class="card" style="border-left:5px solid var(--brand)">
+      <div class="input-group">
+        <label for="start-date">Start Date *</label>
+        <input class="input" id="start-date" type="date" oninput="updateHandover()" onchange="updateHandover()" />
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding-top:6px;">
+        <span style="font-size:.92rem;font-weight:700;color:var(--text)">Estimated Delivery Date:</span>
+        <strong id="handover-date" style="color:var(--brand);font-size:1.1rem;">—</strong>
+      </div>
+    </div>
+
+    <div id="week-cards"></div>
+
+    <button class="btn btn-ghost btn-block" onclick="addWeek()">+ Add Week</button>
+
+    <!-- Prominent Estimated Delivery Date & Client Confirmation -->
+    <div class="card" style="margin-top:26px;background:linear-gradient(135deg,#f0fdf4 0%,#ffffff 100%);border:2px solid var(--brand-light);box-shadow:var(--shadow-lg)">
+      <div style="text-align:center;margin-bottom:14px;">
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">Expected Delivery Date for Client</p>
+        <div id="sched-delivery-box" style="font-size:1.45rem;font-weight:900;color:var(--brand);">—</div>
+      </div>
+      <p style="font-size:.88rem;color:var(--text);text-align:center;margin-bottom:16px;font-weight:500;">
+        Ask the client to confirm the timeline & estimated delivery date:
+      </p>
+      <div class="btn-row" style="margin-top:0;">
+        <button class="btn btn-primary" onclick="confirmSchedule()">Confirm</button>
+        <button class="btn btn-danger" onclick="denySchedule()">Deny</button>
+      </div>
+      <p id="sched-error" class="text-danger" style="margin-top:12px;text-align:center;"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: LIVE PROJECT (Page 4)
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-live" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" onclick="goBack()">← Back</button>
+
+    <div id="archived-notice" style="display:none;" class="archived-badge">
+      📁 Archived Completed Project (Read-Only)
+    </div>
+
+    <p class="page-title" id="live-title">Project Details</p>
+
+    <!-- Progress Tube -->
+    <div class="tube-wrap">
+      <div class="tube-pct-label">
+        <span id="live-pct-num">0</span><span>%</span>
+      </div>
+      <div class="tube-track">
+        <div class="tube-fill" id="tube-fill" style="width:0%"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:10px;">
+        <span class="text-muted" style="font-size:.82rem;font-weight:600" id="live-start-label">Start: —</span>
+        <span class="text-muted" style="font-size:.82rem;font-weight:600" id="live-handover-label">Handover: —</span>
+      </div>
+    </div>
+
+    <!-- Banner -->
+    <div class="banner" id="week-banner"></div>
+
+    <!-- Review Card (if archived) -->
+    <div class="card" id="archived-review-card" style="display:none;background:var(--accent-soft);border:1.5px solid var(--accent);">
+      <h3 style="color:var(--warn);margin-bottom:8px;">Client Satisfaction Review</h3>
+      <div id="archived-review-body" style="font-size:.92rem;line-height:1.7;"></div>
+    </div>
+
+    <!-- Current Week -->
+    <div class="card" id="current-week-card">
+      <h3 id="current-week-title">Week 1</h3>
+
+      <p style="font-size:.84rem;font-weight:700;color:var(--muted);margin-bottom:8px;margin-top:12px;text-transform:uppercase;letter-spacing:.04em">Tasks</p>
+      <div id="live-tasks"></div>
+
+      <p style="font-size:.84rem;font-weight:700;color:var(--muted);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:.04em">Supplies to Buy</p>
+      <div id="live-supplies"></div>
+
+      <button id="btn-complete-week" class="btn btn-primary btn-block" style="margin-top:20px;" onclick="completeWeek()">Complete Week</button>
+    </div>
+
+    <!-- Budget Panel -->
+    <div class="card">
+      <h3>Budget Panel</h3>
+      <div id="budget-alert"></div>
+      <div class="budget-row">
+        <span class="label">Total Budget (Est. Cost)</span>
+        <span class="value" id="b-total">—</span>
+      </div>
+      <div class="budget-row">
+        <span class="label">Spent</span>
+        <span class="value" id="b-spent">—</span>
+      </div>
+      <div class="budget-row">
+        <span class="label">Remaining</span>
+        <span class="value" id="b-remaining">—</span>
+      </div>
+      <div class="divider"></div>
+
+      <div id="add-expense-container">
+        <h3 style="margin-bottom:12px;">Add Expense</h3>
+        <div class="input-group">
+          <label for="exp-desc">Description</label>
+          <input class="input" id="exp-desc" type="text" placeholder="e.g. Tiles – Hall" />
+        </div>
+        <div class="input-group">
+          <label for="exp-amt">Amount (EGP)</label>
+          <input class="input" id="exp-amt" type="number" min="0" placeholder="0" />
+        </div>
+        <button class="btn btn-accent btn-sm" onclick="addExpense()">Add Expense</button>
+      </div>
+
+      <!-- Expense History -->
+      <div id="expense-history-section" style="margin-top:18px;display:none;">
+        <p style="font-size:.84rem;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">Logged Expenses</p>
+        <div id="expense-history-list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     SCREEN: ABOUT US
+═════════════════════════════════════════════════════════════════ -->
+<div id="screen-about" class="screen">
+  <div class="page-wrap">
+    <button class="btn-back" onclick="goBack()">← Back</button>
+    <p class="page-title">About Us</p>
+    <p class="page-subtitle">Why SiteFlo exists and who it's for.</p>
+
+    <div class="about-section">
+      <h3>1. The Problem / Need</h3>
+      <p>Design and finishing engineers in Egypt manage their projects without a simple tool to track costs, time and payments. As a result, they overspend on materials, projects run late, and they pay workers for extra time. Mistakes also damage their reputation with clients, and all of this reduces their profit.</p>
+    </div>
+
+    <div class="about-section">
+      <h3>2. The Target User</h3>
+      <p>Independent design and finishing engineers and small finishing firms in Egypt who manage residential finishing projects (apartments and villas) for homeowners.</p>
+    </div>
+
+    <div class="about-section">
+      <h3>3. The Proposed Solution</h3>
+      <p>SiteFlo is a simple project-management app that lets the engineer cost a project, set the service price, schedule the work week by week, and track progress, budget and client satisfaction in one place.</p>
+    </div>
+
+    <div class="about-section">
+      <h3>4. Why It Is Suitable</h3>
+      <p>It targets the three business drivers directly. Cost: full cost build-up and budget tracking. Revenue: margin-based pricing and client reviews. Risk: warnings for missed tasks and payments, and a clear schedule. There are many alternatives to SiteFlo, but none are as accessible, simple, or tackle the problems as we do.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     MODALS
+═════════════════════════════════════════════════════════════════ -->
+
+<!-- Budget Exceeded Popup Warning -->
+<div class="modal-overlay" id="modal-budget-exceeded">
+  <div class="modal" style="border-top:6px solid var(--danger);">
+    <h3 style="color:var(--danger);display:flex;align-items:center;gap:6px;">
+      ⚠️ Budget Exceeded Warning!
+    </h3>
+    <p id="modal-budget-msg" style="color:var(--text);font-size:.92rem;line-height:1.6;margin-bottom:20px;">
+      Your total spent has exceeded the estimated project budget!
+    </p>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-block" onclick="closeModal('modal-budget-exceeded')">Acknowledge Warning</button>
+    </div>
+  </div>
+</div>
+
+<!-- Incomplete week warning -->
+<div class="modal-overlay" id="modal-incomplete">
+  <div class="modal">
+    <h3>⚠️ Incomplete Items</h3>
+    <p>Some tasks or purchases for this week are not done.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modal-incomplete')">Go back</button>
+      <button class="btn btn-primary" onclick="forceCompleteWeek()">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reschedule pop-up -->
+<div class="modal-overlay" id="modal-reschedule">
+  <div class="modal">
+    <h3>Reschedule Project?</h3>
+    <p>Do you want to reschedule your project?</p>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="rescheduleYes()">Yes</button>
+      <button class="btn btn-danger" onclick="rescheduleNo()">No</button>
+    </div>
+  </div>
+</div>
+
+<!-- Client satisfaction -->
+<div class="modal-overlay" id="modal-review">
+  <div class="modal">
+    <h3>🎉 Project Complete!</h3>
+    <p>Was the client satisfied, or does the client have any concerns?</p>
+
+    <div style="margin-bottom:14px;">
+      <label style="margin-bottom:8px;">Satisfaction</label>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;cursor:pointer;">
+          <input type="radio" name="sat" value="satisfied" id="sat-yes" style="accent-color:var(--brand);" /> Satisfied
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-weight:600;font-size:.9rem;cursor:pointer;">
+          <input type="radio" name="sat" value="not-fully" id="sat-no" style="accent-color:var(--brand);" /> Not fully satisfied
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="margin-bottom:8px;">Rating</label>
+      <div class="star-row" id="star-row">
+        <span class="star" data-v="1" onclick="setStar(1)">★</span>
+        <span class="star" data-v="2" onclick="setStar(2)">★</span>
+        <span class="star" data-v="3" onclick="setStar(3)">★</span>
+        <span class="star" data-v="4" onclick="setStar(4)">★</span>
+        <span class="star" data-v="5" onclick="setStar(5)">★</span>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label for="review-comment">Comments (optional)</label>
+      <textarea class="input" id="review-comment" rows="3" placeholder="Client feedback…" style="resize:vertical;"></textarea>
+    </div>
+
+    <p id="review-error" class="text-danger" style="margin-bottom:10px;"></p>
+    <button class="btn btn-primary btn-block" onclick="submitReview()">Submit Review</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════
+     JAVASCRIPT
+═════════════════════════════════════════════════════════════════ -->
+<script>
+/* ──────────────────────────────────────────────────────────────
+   STATE & NAVIGATION HISTORY
+─────────────────────────────────────────────────────────────── */
+let activeUser     = null; // { name, firm }
+let projectCounter = 0;   // for auto-generating Client ID (CLI-001...)
+let projects        = [];   // active projects
+let archive         = [];   // completed projects
+let draft           = null; // project being created
+let currentId       = null; // id of project currently open in live screen
+
+// Stack to track previous screens for step-by-step Back navigation
+let screenHistory  = [];
+
+/* ──────────────────────────────────────────────────────────────
+   HELPERS & DATE PARSING
+─────────────────────────────────────────────────────────────── */
+function uid() {
+  return '_' + Math.random().toString(36).slice(2, 9);
+}
+
+function formatClientId(num) {
+  return 'CLI-' + String(num).padStart(3, '0');
+}
+
+function fmtEGP(n) {
+  if (isNaN(n) || n === null || n === undefined) return '0 EGP';
+  return Number(n).toLocaleString('en-EG', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }) + ' EGP';
+}
+
+// Safely parse local date input string ("YYYY-MM-DD") to prevent UTC timezone shifts
+function parseLocalDate(dateStr) {
+  if (!dateStr) return null;
+  const parts = dateStr.split('-');
+  if (parts.length !== 3) return new Date(dateStr);
+  return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+}
+
+// Formats date object to full readable string: "Sun, 04 Oct 2026"
+function formatFullDateWithTime(dateObj, includeTime = false) {
+  if (!dateObj || isNaN(dateObj.getTime())) return '—';
+  const dayName = dateObj.toLocaleDateString('en-GB', { weekday: 'short' });
+  const day     = String(dateObj.getDate()).padStart(2, '0');
+  const month   = dateObj.toLocaleDateString('en-GB', { month: 'short' });
+  const year    = dateObj.getFullYear();
+
+  if (includeTime) {
+    const timeStr = dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
+    return `${dayName}, ${day} ${month} ${year} at ${timeStr}`;
+  }
+  return `${dayName}, ${day} ${month} ${year}`;
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function navigateTo(screenId) {
+  const current = document.querySelector('.screen.active')?.id;
+  if (current && current !== screenId) {
+    screenHistory.push(current);
+  }
+  showScreen(screenId);
+}
+
+function goBack() {
+  if (screenHistory.length > 0) {
+    const prev = screenHistory.pop();
+    showScreen(prev);
+  } else {
+    showScreen(activeUser ? 'screen-home' : 'screen-signin');
+  }
+}
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function esc(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   SIGN IN / AUTH
+─────────────────────────────────────────────────────────────── */
+function submitSignIn() {
+  const err = document.getElementById('signin-error');
+  err.textContent = '';
+  const name = document.getElementById('signin-name').value.trim();
+  const firm = document.getElementById('signin-firm').value.trim();
+
+  if (!name) {
+    err.textContent = 'Please enter your name to sign in.';
+    return;
+  }
+
+  activeUser = { name, firm };
+  updateNavUser();
+  renderHome();
+  screenHistory = ['screen-signin'];
+  showScreen('screen-home');
+}
+
+function signOut() {
+  activeUser = null;
+  document.getElementById('signin-name').value = '';
+  document.getElementById('signin-firm').value = '';
+  updateNavUser();
+  screenHistory = [];
+  showScreen('screen-signin');
+}
+
+function updateNavUser() {
+  const badge = document.getElementById('nav-user-badge');
+  const btnSignout = document.getElementById('btn-signout');
+  const sub = document.getElementById('home-user-sub');
+
+  if (activeUser) {
+    badge.textContent = activeUser.name + (activeUser.firm ? ` (${activeUser.firm})` : '');
+    badge.style.display = 'inline-block';
+    btnSignout.style.display = 'inline-block';
+    sub.textContent = `Welcome back, ${activeUser.name}! Manage your active projects below.`;
+  } else {
+    badge.style.display = 'none';
+    btnSignout.style.display = 'none';
+  }
+}
+
+function goHome() {
+  if (!activeUser) {
+    showScreen('screen-signin');
+    return;
+  }
+  draft = null;
+  renderHome();
+  navigateTo('screen-home');
+}
+
+function showAbout() {
+  navigateTo('screen-about');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   HOME – RENDER
+─────────────────────────────────────────────────────────────── */
+function renderHome() {
+  renderActiveList();
+  renderArchiveList();
+}
+
+function renderActiveList() {
+  const el = document.getElementById('home-active-list');
+  if (!projects.length) {
+    el.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🏗️</div>
+        <p>No active projects yet.<br>Tap the <strong>+</strong> button below to create one.</p>
+      </div>`;
+    return;
+  }
+  el.innerHTML = projects.map(p => {
+    const total = p.weeks.length || 1;
+    const done  = p.currentWeek;
+    const pct   = Math.round((done / total) * 100);
+    return `
+      <div class="proj-card" onclick="openLive('${p.id}')">
+        <div class="proj-card-header">
+          <div>
+            <div class="proj-card-name">${esc(p.clientName)} <span style="font-size:.8rem;font-weight:700;color:var(--brand)">(${esc(p.clientId)})</span></div>
+            <div class="proj-card-type">${esc(p.homeType)} · ${esc(p.rooms)} rooms · ${esc(p.size)} m²</div>
+          </div>
+          <div class="proj-card-progress">
+            <div class="progress-pct">${pct}%</div>
+            <div class="mini-bar"><div class="mini-bar-fill" style="width:${pct}%"></div></div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function renderArchiveList() {
+  const el = document.getElementById('home-archive-list');
+  if (!archive.length) {
+    el.innerHTML = `<p class="text-muted" style="font-size:.85rem;text-align:center;padding:12px 0;">No completed projects in archive yet.</p>`;
+    return;
+  }
+  el.innerHTML = archive.map(p => {
+    const filled = '★'.repeat(p.review.rating);
+    const empty  = '☆'.repeat(5 - p.review.rating);
+    return `
+      <div class="archive-card" onclick="openLive('${p.id}')" title="Click to view history & details">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="archive-name">${esc(p.clientName)} — ${esc(p.homeType)} <span style="font-size:.78rem;color:var(--muted)">(${esc(p.clientId)})</span></div>
+          <span style="font-size:.78rem;font-weight:700;color:var(--brand)">View Details →</span>
+        </div>
+        <div class="archive-rating">${filled}${empty} (${p.review.rating}/5) · ${p.review.satisfaction === 'satisfied' ? '✅ Satisfied' : '⚠️ Not fully satisfied'}</div>
+        ${p.review.comment ? `<div class="archive-review">"${esc(p.review.comment)}"</div>` : ''}
+      </div>`;
+  }).join('');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   PAGE 2 – NEW PROJECT & COSTING
+─────────────────────────────────────────────────────────────── */
+function startNewProject() {
+  if (!activeUser) {
+    showScreen('screen-signin');
+    return;
+  }
+
+  const nextNumber = projectCounter + 1;
+  const autoClientId = formatClientId(nextNumber);
+
+  draft = {
+    id: uid(),
+    clientName: '',
+    clientId: autoClientId,
+    clientSeqNum: nextNumber,
+    homeType: '', rooms: '', size: '',
+    supplies: [],
+    workers: 0, salary: 0, months: 0,
+    margin: 0,
+    labourTotal: 0, suppliesTotal: 0, estTotal: 0, servicePrice: 0,
+    weeks: [],
+    startDate: '',
+    currentWeek: 0,
+    spent: 0,
+    expenses: []
+  };
+  resetCostingForm();
+  navigateTo('screen-costing');
+}
+
+function resetCostingForm() {
+  ['c-name','c-rooms','c-size','l-workers','l-salary','l-months','margin'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('c-id').value = draft.clientId;
+  document.getElementById('c-type').value = '';
+  document.getElementById('supply-rows').innerHTML = '';
+  document.getElementById('costing-error').textContent = '';
+  updateCalc();
+}
+
+function addSupplyRow() {
+  const sid = uid();
+  const div = document.createElement('div');
+  div.className = 'supply-row';
+  div.id = 'sr-' + sid;
+  div.innerHTML = `
+    <input class="input" placeholder="Category" id="scat-${sid}" oninput="updateCalc()" />
+    <input class="input" type="number" min="0" placeholder="Qty" id="sqty-${sid}" oninput="updateCalc()" />
+    <input class="input" type="number" min="0" placeholder="Price/unit" id="sprc-${sid}" oninput="updateCalc()" />
+    <span class="supply-row-total" id="stot-${sid}">0 EGP</span>
+    <button class="btn btn-danger btn-icon btn-sm" onclick="removeSupplyRow('${sid}')" title="Remove">✕</button>`;
+  document.getElementById('supply-rows').appendChild(div);
+  updateCalc();
+}
+
+function removeSupplyRow(sid) {
+  const el = document.getElementById('sr-' + sid);
+  if (el) el.remove();
+  updateCalc();
+}
+
+function getSupplyRows() {
+  const rows = [];
+  document.querySelectorAll('[id^="sr-"]').forEach(el => {
+    const sid  = el.id.replace('sr-','');
+    const cat  = (document.getElementById('scat-'+sid)?.value || '').trim();
+    const qty  = parseFloat(document.getElementById('sqty-'+sid)?.value) || 0;
+    const prc  = parseFloat(document.getElementById('sprc-'+sid)?.value) || 0;
+    rows.push({ id: sid, category: cat, qty, price: prc, total: qty * prc });
+  });
+  return rows;
+}
+
+function updateCalc() {
+  const supplyRows = getSupplyRows();
+  supplyRows.forEach(r => {
+    const el = document.getElementById('stot-' + r.id);
+    if (el) el.textContent = fmtEGP(r.total);
+  });
+  const suppliesTotal = supplyRows.reduce((s, r) => s + r.total, 0);
+
+  const workers = Math.max(0, parseFloat(document.getElementById('l-workers')?.value) || 0);
+  const salary  = Math.max(0, parseFloat(document.getElementById('l-salary')?.value)  || 0);
+  const months  = Math.max(0, parseFloat(document.getElementById('l-months')?.value)  || 0);
+  const labourTotal = workers * salary * months;
+
+  const estTotal = suppliesTotal + labourTotal;
+  const margin   = Math.max(0, parseFloat(document.getElementById('margin')?.value) || 0);
+  const price    = estTotal + estTotal * (margin / 100);
+
+  document.getElementById('supplies-total').textContent = fmtEGP(suppliesTotal);
+  document.getElementById('labour-total').textContent   = fmtEGP(labourTotal);
+  document.getElementById('est-total').textContent      = fmtEGP(estTotal);
+  document.getElementById('cost-supplies').textContent  = fmtEGP(suppliesTotal);
+  document.getElementById('cost-labour').textContent    = fmtEGP(labourTotal);
+  document.getElementById('service-price').textContent  = fmtEGP(price);
+}
+
+function confirmProject() {
+  const err = document.getElementById('costing-error');
+  err.textContent = '';
+
+  const name  = document.getElementById('c-name').value.trim();
+  const cid   = draft.clientId;
+  const type  = document.getElementById('c-type').value;
+  const rooms = parseFloat(document.getElementById('c-rooms').value);
+  const size  = parseFloat(document.getElementById('c-size').value);
+  const workers = parseFloat(document.getElementById('l-workers').value);
+  const salary  = parseFloat(document.getElementById('l-salary').value);
+  const months  = parseFloat(document.getElementById('l-months').value);
+
+  if (!name)              { err.textContent = 'Customer name is required.'; return; }
+  if (!type)              { err.textContent = 'Please select a home type.'; return; }
+  if (!rooms || rooms < 1){ err.textContent = 'Enter a valid number of rooms (≥ 1).'; return; }
+  if (!size  || size  < 1){ err.textContent = 'Enter a valid size (≥ 1 m²).'; return; }
+  if (isNaN(workers) || workers < 0) { err.textContent = 'Number of workers must be 0 or more.'; return; }
+  if (isNaN(salary)  || salary  < 0) { err.textContent = 'Salary must be 0 or more.'; return; }
+  if (isNaN(months)  || months  < 0) { err.textContent = 'Duration must be 0 or more months.'; return; }
+
+  const supplyRows = getSupplyRows();
+  for (const r of supplyRows) {
+    if (!r.category) { err.textContent = 'All supply rows must have a category name.'; return; }
+    if (r.qty < 0 || r.price < 0) { err.textContent = 'Supply quantities and prices must be 0 or more.'; return; }
+  }
+
+  const suppliesTotal = supplyRows.reduce((s, r) => s + r.total, 0);
+  const labourTotal   = workers * salary * months;
+  const estTotal      = suppliesTotal + labourTotal;
+  const margin        = Math.max(0, parseFloat(document.getElementById('margin').value) || 0);
+  const servicePrice  = estTotal + estTotal * (margin / 100);
+
+  draft.clientName    = name;
+  draft.clientId      = cid;
+  draft.homeType      = type;
+  draft.rooms         = rooms;
+  draft.size          = size;
+  draft.supplies      = supplyRows;
+  draft.workers       = workers;
+  draft.salary        = salary;
+  draft.months        = months;
+  draft.margin        = margin;
+  draft.suppliesTotal = suppliesTotal;
+  draft.labourTotal   = labourTotal;
+  draft.estTotal      = estTotal;
+  draft.servicePrice  = servicePrice;
+  draft.weeks         = [];
+  draft.currentWeek   = 0;
+  draft.spent         = 0;
+  draft.expenses      = [];
+
+  buildScheduleScreen();
+  navigateTo('screen-schedule');
+}
+
+function denyProject() {
+  draft = null;
+  goHome();
+}
+
+/* ──────────────────────────────────────────────────────────────
+   PAGE 3 – TIME SCHEDULE
+─────────────────────────────────────────────────────────────── */
+function buildScheduleScreen() {
+  document.getElementById('sched-subtitle').textContent =
+    'Planning for ' + draft.clientName + ' (' + draft.clientId + ') — ' + draft.homeType;
+
+  // Set default start date input to today's date in YYYY-MM-DD format
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const dd = String(today.getDate()).padStart(2, '0');
+  document.getElementById('start-date').value = `${yyyy}-${mm}-${dd}`;
+
+  document.getElementById('sched-error').textContent = '';
+  document.getElementById('week-cards').innerHTML = '';
+  draft.weeks = [];
+  updateHandover();
+}
+
+function addWeek() {
+  const wIdx = draft.weeks.length;
+  const week = {
+    id: uid(),
+    num: wIdx + 1,
+    tasks: [],
+    suppliesChecked: [],
+    taskChecked: {},
+    purchaseChecked: {},
+    completed: false
+  };
+  draft.weeks.push(week);
+  renderWeekCards();
+  updateHandover();
+}
+
+function renderWeekCards() {
+  const container = document.getElementById('week-cards');
+  container.innerHTML = '';
+  draft.weeks.forEach((week) => {
+    const div = document.createElement('div');
+    div.className = 'week-card';
+    div.id = 'wc-' + week.id;
+
+    const supplyChecks = draft.supplies.map(s => `
+      <label class="check-item" style="cursor:pointer;">
+        <input type="checkbox" id="ws-${week.id}-${s.id}"
+          ${week.suppliesChecked.includes(s.id) ? 'checked' : ''}
+          onchange="toggleWeekSupply('${week.id}','${s.id}',this.checked)" />
+        <span>${esc(s.category)} (${s.qty} × ${fmtEGP(s.price)})</span>
+      </label>`).join('');
+
+    const taskRows = week.tasks.map((t, ti) => `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <span class="task-desc-text" style="flex:1;">• ${esc(t)}</span>
+        <button class="btn btn-danger btn-icon btn-sm" onclick="removeWeekTask('${week.id}',${ti})">✕</button>
+      </div>`).join('');
+
+    div.innerHTML = `
+      <div class="week-header">
+        <span class="week-title">Week ${week.num}</span>
+        <button class="btn btn-danger btn-sm" onclick="removeWeek('${week.id}')">Remove</button>
+      </div>
+      ${draft.supplies.length ? `
+        <p style="font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:6px;">Supplies to buy this week:</p>
+        ${supplyChecks}
+        <div class="divider"></div>` : ''}
+      <p style="font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:8px;">Tasks for this week:</p>
+      <div id="tasks-${week.id}">${taskRows}</div>
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input class="input" id="task-input-${week.id}" type="text" placeholder="Type task description…" style="flex:1;"
+          onblur="addWeekTaskOnBlur('${week.id}', this)"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addWeekTaskDirect('${week.id}', this);}" />
+        <button class="btn btn-ghost btn-sm" onclick="addWeekTaskFromBtn('${week.id}')">Add Task</button>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function toggleWeekSupply(weekId, supplyId, checked) {
+  const week = draft.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  if (checked) {
+    if (!week.suppliesChecked.includes(supplyId)) week.suppliesChecked.push(supplyId);
+  } else {
+    week.suppliesChecked = week.suppliesChecked.filter(id => id !== supplyId);
+  }
+}
+
+function addWeekTaskOnBlur(weekId, inpEl) {
+  if (!inpEl) return;
+  const val = inpEl.value.trim();
+  if (!val) return;
+  const week = draft.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  week.tasks.push(val);
+  inpEl.value = '';
+  renderWeekCards();
+  updateHandover();
+}
+
+function addWeekTaskDirect(weekId, inpEl) {
+  if (!inpEl) return;
+  const val = inpEl.value.trim();
+  if (!val) return;
+  const week = draft.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  week.tasks.push(val);
+  inpEl.value = '';
+  renderWeekCards();
+  updateHandover();
+  const newInp = document.getElementById('task-input-' + weekId);
+  if (newInp) newInp.focus();
+}
+
+function addWeekTaskFromBtn(weekId) {
+  const inpEl = document.getElementById('task-input-' + weekId);
+  if (inpEl) addWeekTaskDirect(weekId, inpEl);
+}
+
+function removeWeekTask(weekId, ti) {
+  const week = draft.weeks.find(w => w.id === weekId);
+  if (!week) return;
+  week.tasks.splice(ti, 1);
+  renderWeekCards();
+}
+
+function removeWeek(weekId) {
+  draft.weeks = draft.weeks.filter(w => w.id !== weekId);
+  draft.weeks.forEach((w, i) => { w.num = i + 1; });
+  renderWeekCards();
+  updateHandover();
+}
+
+// Calculate delivery date accurately from the user-selected Start Date + (number of weeks * 7 days)
+function updateHandover() {
+  const sdInput = document.getElementById('start-date').value;
+  if (!sdInput || !draft) {
+    document.getElementById('handover-date').textContent = '—';
+    document.getElementById('sched-delivery-box').textContent = '—';
+    return;
+  }
+
+  const startDate = parseLocalDate(sdInput);
+  const numWeeks  = draft.weeks ? draft.weeks.length : 0;
+
+  if (numWeeks === 0) {
+    const formattedStart = formatFullDateWithTime(startDate);
+    document.getElementById('handover-date').textContent = 'Add weeks to calculate';
+    document.getElementById('sched-delivery-box').innerHTML = `
+      <div style="font-size:1.1rem;color:var(--warn);font-weight:700">Please add at least 1 week</div>
+      <div style="font-size:.84rem;font-weight:500;color:var(--muted);margin-top:4px;">
+        Selected Start Date: <strong>${formattedStart}</strong>
+      </div>`;
+    return;
+  }
+
+  // Exact math: startDate + (numWeeks * 7 days)
+  const deliveryDate = new Date(startDate.getTime());
+  deliveryDate.setDate(deliveryDate.getDate() + (numWeeks * 7));
+
+  const formattedStart    = formatFullDateWithTime(startDate);
+  const formattedDelivery = formatFullDateWithTime(deliveryDate);
+
+  document.getElementById('handover-date').textContent = `${formattedDelivery} (${numWeeks} week${numWeeks > 1 ? 's' : ''})`;
+  document.getElementById('sched-delivery-box').innerHTML = `
+    <div style="font-size:1.45rem;font-weight:900;color:var(--brand);">${formattedDelivery}</div>
+    <div style="font-size:.84rem;font-weight:500;color:var(--text);margin-top:6px;">
+      Selected Start: <strong>${formattedStart}</strong> &nbsp;·&nbsp; Planned Duration: <strong>${numWeeks} week${numWeeks > 1 ? 's' : ''} (${numWeeks * 7} days)</strong>
+    </div>`;
+}
+
+function confirmSchedule() {
+  const err = document.getElementById('sched-error');
+  err.textContent = '';
+  const sd = document.getElementById('start-date').value;
+  if (!sd) { err.textContent = 'Please select a valid start date.'; return; }
+  if (!draft.weeks.length) { err.textContent = 'Add at least one week to the schedule.'; return; }
+  for (const w of draft.weeks) {
+    if (!w.tasks.length && !w.suppliesChecked.length) {
+      err.textContent = `Week ${w.num} has no tasks or supplies. Add at least one item.`;
+      return;
+    }
+  }
+  draft.startDate = sd;
+
+  // Init live tracking state
+  draft.weeks.forEach(w => {
+    w.taskChecked     = {};
+    w.purchaseChecked = {};
+    w.tasks.forEach((_, i) => { w.taskChecked[i] = false; });
+    w.suppliesChecked.forEach(sid => { w.purchaseChecked[sid] = false; });
+    w.completed = false;
+    w.completedAt = null;
+    w.timingStatus = null;
+  });
+  draft.currentWeek = 0;
+
+  projectCounter++;
+  projects.push(draft);
+  currentId = draft.id;
+  draft = null;
+  renderHome();
+  openLive(currentId);
+}
+
+function denySchedule() {
+  openModal('modal-reschedule');
+}
+
+function rescheduleYes() {
+  closeModal('modal-reschedule');
+}
+
+function rescheduleNo() {
+  closeModal('modal-reschedule');
+  draft = null;
+  goHome();
+}
+
+/* ──────────────────────────────────────────────────────────────
+   PAGE 4 – LIVE / ARCHIVED PROJECT DETAILS
+─────────────────────────────────────────────────────────────── */
+function openLive(id) {
+  let p = projects.find(x => x.id === id);
+  let isArchived = false;
+  if (!p) {
+    p = archive.find(x => x.id === id);
+    isArchived = true;
+  }
+  if (!p) return;
+  currentId = id;
+  renderLive(p, isArchived);
+  navigateTo('screen-live');
+}
+
+function renderLive(p, isArchived = false) {
+  // Archived badge
+  document.getElementById('archived-notice').style.display = isArchived ? 'inline-block' : 'none';
+
+  // Title
+  document.getElementById('live-title').textContent = p.clientName + ' (' + p.clientId + ') — ' + p.homeType;
+
+  // Start & Delivery date labels based on user's selected startDate + weeks
+  const startDate = parseLocalDate(p.startDate);
+  const numWeeks  = p.weeks.length;
+  const deliveryDate = new Date(startDate.getTime());
+  deliveryDate.setDate(deliveryDate.getDate() + numWeeks * 7);
+
+  const startStr    = formatFullDateWithTime(startDate);
+  const handoverStr = formatFullDateWithTime(deliveryDate);
+
+  document.getElementById('live-start-label').textContent = 'Start: ' + startStr;
+  document.getElementById('live-handover-label').textContent = 'Handover: ' + handoverStr;
+
+  // Progress
+  const pct = p.weeks.length
+    ? Math.round((p.currentWeek / p.weeks.length) * 100) : 0;
+  document.getElementById('live-pct-num').textContent = pct;
+  document.getElementById('tube-fill').style.width = pct + '%';
+
+  // Review section for archived project
+  const reviewCard = document.getElementById('archived-review-card');
+  if (isArchived && p.review) {
+    reviewCard.style.display = 'block';
+    const stars = '★'.repeat(p.review.rating) + '☆'.repeat(5 - p.review.rating);
+    document.getElementById('archived-review-body').innerHTML = `
+      <div><strong>Status:</strong> ${p.review.satisfaction === 'satisfied' ? '✅ Satisfied' : '⚠️ Not fully satisfied'}</div>
+      <div><strong>Rating:</strong> <span style="color:var(--accent);font-size:1.1rem">${stars}</span> (${p.review.rating}/5)</div>
+      ${p.review.comment ? `<div><strong>Comments:</strong> "${esc(p.review.comment)}"</div>` : ''}
+    `;
+  } else {
+    reviewCard.style.display = 'none';
+  }
+
+  // Current week card
+  const currentWeekCard = document.getElementById('current-week-card');
+  const btnComplete     = document.getElementById('btn-complete-week');
+
+  if (p.currentWeek < p.weeks.length && !isArchived) {
+    const week = p.weeks[p.currentWeek];
+    currentWeekCard.style.display = '';
+    btnComplete.style.display = '';
+    document.getElementById('current-week-title').textContent = 'Week ' + week.num;
+
+    // Banner
+    const supplyNames = week.suppliesChecked.map(sid => {
+      const s = p.supplies.find(x => x.id === sid);
+      return s ? s.category : '';
+    }).filter(Boolean);
+
+    let bannerHTML = '<strong>📋 This week\'s tasks and payments</strong>';
+    if (week.tasks.length) {
+      bannerHTML += '<span style="font-weight:400"><b>Tasks:</b> ' + week.tasks.map(t => esc(t)).join(', ') + '</span><br>';
+    }
+    if (supplyNames.length) {
+      bannerHTML += '<span style="font-weight:400"><b>Buy:</b> ' + supplyNames.map(n => esc(n)).join(', ') + '</span>';
+    }
+    document.getElementById('week-banner').innerHTML = bannerHTML;
+    document.getElementById('week-banner').style.display = '';
+
+    // Tasks checklist
+    const tc = document.getElementById('live-tasks');
+    if (week.tasks.length) {
+      tc.innerHTML = week.tasks.map((t, i) => `
+        <label class="check-item ${week.taskChecked[i] ? 'done' : ''}">
+          <input type="checkbox" ${week.taskChecked[i] ? 'checked' : ''}
+            onchange="checkTask(${p.currentWeek},${i},this.checked)" />
+          <span class="task-desc-text">${esc(t)}</span>
+        </label>`).join('');
+    } else {
+      tc.innerHTML = '<p class="text-muted" style="font-size:.85rem;">No tasks for this week.</p>';
+    }
+
+    // Supplies checklist
+    const sc = document.getElementById('live-supplies');
+    const weekSupplies = week.suppliesChecked
+      .map(sid => p.supplies.find(x => x.id === sid))
+      .filter(Boolean);
+
+    if (weekSupplies.length) {
+      sc.innerHTML = weekSupplies.map(s => `
+        <label class="check-item ${week.purchaseChecked[s.id] ? 'done' : ''}">
+          <input type="checkbox" ${week.purchaseChecked[s.id] ? 'checked' : ''}
+            onchange="checkPurchase(${p.currentWeek},'${s.id}',this.checked)" />
+          <span class="task-desc-text">${esc(s.category)} — ${s.qty} × ${fmtEGP(s.price)} = ${fmtEGP(s.total)}</span>
+        </label>`).join('');
+    } else {
+      sc.innerHTML = '<p class="text-muted" style="font-size:.85rem;">No supplies to buy this week.</p>';
+    }
+  } else if (isArchived) {
+    currentWeekCard.style.display = '';
+    btnComplete.style.display = 'none';
+    document.getElementById('current-week-title').textContent = 'Project Week History & Timeline Tracking';
+    document.getElementById('week-banner').style.display = 'none';
+
+    let historyHTML = '';
+    p.weeks.forEach(w => {
+      const supplyNames = w.suppliesChecked.map(sid => {
+        const s = p.supplies.find(x => x.id === sid);
+        return s ? s.category : '';
+      }).filter(Boolean);
+
+      const statusBadge = w.isDelayed
+        ? `<span class="badge-delayed">${w.timingStatus}</span>`
+        : `<span class="badge-ontime">${w.timingStatus || '🟢 On Time'}</span>`;
+
+      historyHTML += `
+        <div style="margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <strong style="color:var(--brand);font-size:.95rem;">Week ${w.num}</strong>
+            ${statusBadge}
+          </div>
+          ${w.completedAt ? `<div style="font-size:.78rem;color:var(--muted);margin-bottom:6px;">🕒 Completed: <strong>${w.completedAt}</strong></div>` : ''}
+          ${w.tasks.length ? `
+            <div style="font-size:.85rem;margin-top:4px;">
+              <span style="font-weight:600;color:var(--muted);display:block;margin-bottom:2px;">Tasks:</span>
+              ${w.tasks.map(t => `<div class="task-desc-text" style="padding-left:10px;">• ${esc(t)}</div>`).join('')}
+            </div>` : ''}
+          ${supplyNames.length ? `
+            <div style="font-size:.85rem;margin-top:6px;">
+              <span style="font-weight:600;color:var(--muted);display:block;margin-bottom:2px;">Supplies Purchased:</span>
+              ${supplyNames.map(n => `<div class="task-desc-text" style="padding-left:10px;color:var(--muted);">• ${esc(n)}</div>`).join('')}
+            </div>` : ''}
+        </div>`;
+    });
+    document.getElementById('live-tasks').innerHTML = historyHTML || '<p class="text-muted">No week tasks logged.</p>';
+    document.getElementById('live-supplies').innerHTML = '';
+  } else {
+    currentWeekCard.style.display = 'none';
+    document.getElementById('week-banner').style.display = 'none';
+  }
+
+  // Budget
+  const remaining = p.estTotal - p.spent;
+  document.getElementById('b-total').textContent     = fmtEGP(p.estTotal);
+  document.getElementById('b-spent').textContent     = fmtEGP(p.spent);
+  document.getElementById('b-remaining').textContent = fmtEGP(remaining);
+  document.getElementById('b-remaining').className   = 'value ' + (remaining < 0 ? 'danger' : 'success');
+
+  const ba = document.getElementById('budget-alert');
+  ba.innerHTML = p.spent > p.estTotal
+    ? `<div class="alert-danger">⚠️ Spent exceeds the total budget by ${fmtEGP(p.spent - p.estTotal)}!</div>`
+    : '';
+
+  // Expense form & history list
+  document.getElementById('add-expense-container').style.display = isArchived ? 'none' : 'block';
+
+  const expSec  = document.getElementById('expense-history-section');
+  const expList = document.getElementById('expense-history-list');
+  if (p.expenses && p.expenses.length) {
+    expSec.style.display = 'block';
+    expList.innerHTML = p.expenses.map(e => `
+      <div style="display:flex;justify-content:space-between;font-size:.85rem;padding:4px 0;border-bottom:1px dashed var(--border);">
+        <span class="task-desc-text">${esc(e.desc)}</span>
+        <strong style="color:var(--danger);">${fmtEGP(e.amt)}</strong>
+      </div>`).join('');
+  } else {
+    expSec.style.display = 'none';
+  }
+}
+
+function checkTask(wIdx, tIdx, val) {
+  const p = projects.find(x => x.id === currentId);
+  if (!p) return;
+  p.weeks[wIdx].taskChecked[tIdx] = val;
+  const labels = document.querySelectorAll('#live-tasks .check-item');
+  if (labels[tIdx]) labels[tIdx].classList.toggle('done', val);
+}
+
+function checkPurchase(wIdx, sid, val) {
+  const p = projects.find(x => x.id === currentId);
+  if (!p) return;
+  p.weeks[wIdx].purchaseChecked[sid] = val;
+  document.querySelectorAll('#live-supplies .check-item').forEach(label => {
+    const cb = label.querySelector('input[type=checkbox]');
+    if (cb && cb.getAttribute('onchange') && cb.getAttribute('onchange').includes("'" + sid + "'")) {
+      label.classList.toggle('done', val);
+    }
+  });
+}
+
+function completeWeek() {
+  const p = projects.find(x => x.id === currentId);
+  if (!p) return;
+  const week = p.weeks[p.currentWeek];
+
+  const allTasks     = Object.keys(week.taskChecked).length === 0
+    || Object.values(week.taskChecked).every(v => v);
+  const allPurchases = Object.keys(week.purchaseChecked).length === 0
+    || Object.values(week.purchaseChecked).every(v => v);
+
+  if (!allTasks || !allPurchases) {
+    openModal('modal-incomplete');
+    return;
+  }
+  doCompleteWeek(p);
+}
+
+function forceCompleteWeek() {
+  closeModal('modal-incomplete');
+  const p = projects.find(x => x.id === currentId);
+  if (p) doCompleteWeek(p);
+}
+
+function doCompleteWeek(p) {
+  const weekNum = p.currentWeek + 1;
+  const now = new Date();
+
+  // Record completion timestamp with full date & time (e.g. "Sun, 04 Oct 2026 at 03:30 PM")
+  const completedAtFormatted = formatFullDateWithTime(now, true);
+
+  // Calculate expected date for weekNum based on user's selected startDate + (weekNum * 7 days)
+  const startDate = parseLocalDate(p.startDate);
+  const expectedDate = new Date(startDate.getTime());
+  expectedDate.setDate(expectedDate.getDate() + weekNum * 7);
+  expectedDate.setHours(23, 59, 59, 999);
+
+  const isDelayed = now > expectedDate;
+  let timingStatus = '🟢 On Time';
+  if (isDelayed) {
+    const diffMs = now - expectedDate;
+    const diffDays = Math.max(1, Math.ceil(diffMs / (1000 * 60 * 60 * 24)));
+    timingStatus = `🔴 Delayed by ${diffDays} day${diffDays > 1 ? 's' : ''}`;
+  }
+
+  p.weeks[p.currentWeek].completed = true;
+  p.weeks[p.currentWeek].completedAt = completedAtFormatted;
+  p.weeks[p.currentWeek].isDelayed = isDelayed;
+  p.weeks[p.currentWeek].timingStatus = timingStatus;
+
+  p.currentWeek++;
+  renderHome();
+
+  if (p.currentWeek >= p.weeks.length) {
+    renderLive(p);
+    document.getElementById('review-error').textContent = '';
+    document.getElementById('review-comment').value = '';
+    setStar(0);
+    document.getElementById('sat-yes').checked = false;
+    document.getElementById('sat-no').checked  = false;
+    openModal('modal-review');
+  } else {
+    renderLive(p);
+  }
+}
+
+function addExpense() {
+  const p = projects.find(x => x.id === currentId);
+  if (!p) return;
+
+  const desc = document.getElementById('exp-desc').value.trim();
+  const amt  = parseFloat(document.getElementById('exp-amt').value);
+
+  if (!desc) { alert('Please enter an expense description.'); return; }
+  if (isNaN(amt) || amt < 0) { alert('Please enter a valid amount (0 or more).'); return; }
+
+  const previousSpent = p.spent;
+  p.expenses.push({ desc, amt });
+  p.spent += amt;
+
+  document.getElementById('exp-desc').value = '';
+  document.getElementById('exp-amt').value  = '';
+  renderLive(p);
+  renderHome();
+
+  if (p.spent > p.estTotal && previousSpent <= p.estTotal) {
+    const excess = p.spent - p.estTotal;
+    document.getElementById('modal-budget-msg').innerHTML =
+      `Your new total spent of <strong>${fmtEGP(p.spent)}</strong> has exceeded the estimated project budget (<strong>${fmtEGP(p.estTotal)}</strong>) by <strong style="color:var(--danger);">${fmtEGP(excess)}</strong>!`;
+    openModal('modal-budget-exceeded');
+  } else if (p.spent > p.estTotal) {
+    const excess = p.spent - p.estTotal;
+    document.getElementById('modal-budget-msg').innerHTML =
+      `Additional expense recorded. Total spent is now <strong>${fmtEGP(p.spent)}</strong>, exceeding the budget (<strong>${fmtEGP(p.estTotal)}</strong>) by <strong style="color:var(--danger);">${fmtEGP(excess)}</strong>!`;
+    openModal('modal-budget-exceeded');
+  }
+}
+
+/* ──────────────────────────────────────────────────────────────
+   STAR RATING
+─────────────────────────────────────────────────────────────── */
+let selectedStar = 0;
+
+function setStar(v) {
+  selectedStar = v;
+  document.querySelectorAll('.star').forEach(s => {
+    s.classList.toggle('active', parseInt(s.dataset.v) <= v);
+  });
+}
+
+/* ──────────────────────────────────────────────────────────────
+   REVIEW SUBMIT
+─────────────────────────────────────────────────────────────── */
+function submitReview() {
+  const err = document.getElementById('review-error');
+  err.textContent = '';
+  const sat = document.querySelector('input[name=sat]:checked');
+  if (!sat)          { err.textContent = 'Please select a satisfaction level.'; return; }
+  if (!selectedStar) { err.textContent = 'Please give a star rating (1–5).'; return; }
+
+  const p = projects.find(x => x.id === currentId);
+  if (!p) return;
+
+  p.review = {
+    satisfaction: sat.value,
+    rating: selectedStar,
+    comment: document.getElementById('review-comment').value.trim()
+  };
+
+  archive.push(p);
+  projects = projects.filter(x => x.id !== currentId);
+  currentId = null;
+
+  closeModal('modal-review');
+  renderHome();
+  showScreen('screen-home');
+}
+
+/* ──────────────────────────────────────────────────────────────
+   INIT
+─────────────────────────────────────────────────────────────── */
+showScreen('screen-signin');
+</script>
+</body>
+</html>
